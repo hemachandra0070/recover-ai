@@ -153,13 +153,14 @@ recover-ai/
 ### Backend
 
 ```bash
-cd backend
 
 # Activate virtual environment (Windows)
 venv\Scripts\activate
 
 # Or on macOS/Linux
 source venv/bin/activate
+
+cd backend
 
 # Install dependencies
 pip install -r requirements.txt
