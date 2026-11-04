@@ -153,13 +153,14 @@ recover-ai/
 ### Backend
 
 ```bash
-cd backend
 
 # Activate virtual environment (Windows)
 venv\Scripts\activate
 
 # Or on macOS/Linux
 source venv/bin/activate
+
+cd backend
 
 # Install dependencies
 pip install -r requirements.txt
@@ -218,7 +219,3 @@ The dashboard will be available at `http://localhost:5173`.
 - Merchant-specific recovery strategies based on vertical and customer segment
 - Offline evaluation framework for agent decisions (A/B testing, shadow mode)
 - Production observability: distributed tracing, alerting, and SLO dashboards
-
-## Disclaimer
-
-This project is a hackathon prototype. Payment recovery actions are simulated using a mock/test gateway and do not move real funds. The implementation demonstrates an agent architecture and decision pipeline suitable for production hardening, but is not production-ready as-is.
