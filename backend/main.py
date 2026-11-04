@@ -54,6 +54,15 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def normalize_api_prefix(request, call_next):
+    """Allow the API to be called directly or through the /api Vercel rewrite."""
+    path = request.scope["path"]
+    if path == "/api" or path.startswith("/api/"):
+        request.scope["path"] = path[4:] or "/"
+    return await call_next(request)
+
+
 # ---------------------------------------------------------------------------
 # Health Check & Root Endpoints
 # ---------------------------------------------------------------------------

@@ -60,7 +60,7 @@ const Dashboard = () => {
       setRecentActions(ra || []);
       setRecentLogs(rl || []);
     } catch {
-      setError('Unable to connect to the backend. Make sure FastAPI is running on port 8000.');
+      setError('Unable to connect to the backend. Please try again or check the deployment status.');
     } finally {
       setLoading(false);
     }
