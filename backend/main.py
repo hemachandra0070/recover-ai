@@ -32,8 +32,6 @@ except ImportError:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Automatically create tables on startup
-    create_tables()
     yield
 
 
