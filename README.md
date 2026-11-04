@@ -98,11 +98,12 @@ Detect → Diagnose → Decide → Policy Check → Execute → Verify → Audit
 - Python
 - FastAPI
 - SQLAlchemy
-- SQLite
+- SQLite locally
+- PostgreSQL in production through `DATABASE_URL`
 
 **AI**
 - Google Gemini API
-- Gemini 2.5 Flash
+- Configurable Gemini Flash model with fallbacks
 - Structured Pydantic output
 
 ## API Endpoints
@@ -122,29 +123,32 @@ Detect → Diagnose → Decide → Policy Check → Execute → Verify → Audit
 ```
 recover-ai/
 ├── backend/
-│   ├── main.py                 # FastAPI application entry point
+│   ├── main.py                 # FastAPI application
 │   ├── models.py               # SQLAlchemy models
 │   ├── schemas.py              # Pydantic request/response schemas
 │   ├── database.py             # Database configuration
+│   ├── seed.py                 # Demo data seeder
 │   ├── agent/
 │   │   ├── orchestrator.py     # Agent pipeline coordinator
-│   │   ├── diagnosis.py        # Gemini diagnosis service
+│   │   ├── gemini_agent.py     # Gemini diagnosis service
 │   │   ├── policy.py           # Deterministic policy engine
 │   │   ├── execution.py        # Recovery action execution
 │   │   ├── verification.py     # Recovery verification
 │   │   └── audit.py            # Audit logging
-│   ├── services/
-│   │   └── mock_gateway.py     # Simulated payment gateway
-│   └── requirements.txt
+│   └── services/
+│       └── mock_gateway.py     # Simulated payment gateway
 ├── frontend/
 │   ├── src/
+│   │   ├── api/client.js       # Central Axios client
 │   │   ├── components/         # Reusable UI components
 │   │   ├── pages/              # Page components (Dashboard, PaymentDetail, etc.)
-│   │   ├── services/           # API client (Axios)
-│   │   ├── hooks/              # Custom React hooks
-│   │   └── App.tsx             # Root component with routing
+│   │   └── App.jsx             # Root component with routing
 │   ├── package.json
-│   └── vite.config.ts
+│   └── vite.config.js
+├── main.py                     # Vercel Python entrypoint
+├── pyproject.toml              # Vercel/uv dependency and entrypoint config
+├── requirements.txt            # Local pip dependencies
+├── vercel.json                 # Vercel Services and routing config
 └── README.md
 ```
 
@@ -153,6 +157,7 @@ recover-ai/
 ### Backend
 
 ```bash
+# From the project root
 
 # Activate virtual environment (Windows)
 venv\Scripts\activate
@@ -160,19 +165,30 @@ venv\Scripts\activate
 # Or on macOS/Linux
 source venv/bin/activate
 
-cd backend
-
 # Install dependencies
 pip install -r requirements.txt
 
 # Set required environment variable
 # GEMINI_API_KEY=your_api_key_here
 
+# Seed the local SQLite database with demo data
+python -m backend.seed
+
 # Start server
 uvicorn main:app --reload
 ```
 
 The API will be available at `http://localhost:8000`. API docs at `http://localhost:8000/docs`.
+
+To run against PostgreSQL, set `DATABASE_URL` before seeding and starting the server:
+
+```bash
+# DATABASE_URL=postgresql://user:password@host:5432/database
+python -m backend.seed
+uvicorn main:app --reload
+```
+
+The seed command replaces demo data in the target database.
 
 ### Frontend
 
@@ -189,6 +205,24 @@ npm run dev
 The dashboard will be available at `http://localhost:5173`.
 
 > **Security Note:** `GEMINI_API_KEY` must be provided through environment variables and must never be committed to GitHub or included in the repository.
+
+## Deploying to Vercel
+
+This repository uses Vercel Services (`app` for FastAPI and `frontend` for Vite) configured in `vercel.json`. Vercel installs the Python dependencies from `pyproject.toml`; keep it in sync with `requirements.txt`.
+
+Set these environment variables for the `app` service in the Vercel project settings:
+
+- `GEMINI_API_KEY` (required for AI diagnosis)
+- `DATABASE_URL` (PostgreSQL connection string; without it the API starts with ephemeral SQLite under `/tmp`)
+- `GEMINI_MODEL` (optional model override)
+
+The frontend reads `VITE_API_BASE_URL=/api` from `frontend/.env.production`, so browser requests stay on the deployment domain and Vercel routes `/api/*` to FastAPI.
+
+After configuring a persistent PostgreSQL database, seed it once from a machine that can reach it:
+
+```bash
+DATABASE_URL=postgresql://user:password@host:5432/database python -m backend.seed
+```
 
 ## Demo Flow
 

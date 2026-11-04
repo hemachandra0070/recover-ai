@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 
-try:
+if __package__:
     from .database import engine, get_db, create_tables
     from .models import Payment, RecoveryAction, AgentLog, Merchant, Customer
     from .schemas import (
@@ -16,7 +16,7 @@ try:
         DashboardStatsResponse,
     )
     from .agent.orchestrator import run_recovery_agent
-except ImportError:
+else:  # Allows `uvicorn main:app` from inside the backend/ directory.
     from database import engine, get_db, create_tables
     from models import Payment, RecoveryAction, AgentLog, Merchant, Customer
     from schemas import (

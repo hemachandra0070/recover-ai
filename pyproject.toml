@@ -1,2 +1,18 @@
+[project]
+name = "recoverai"
+version = "1.0.0"
+description = "RecoverAI - Autonomous Revenue Recovery Agent backend"
+requires-python = "~=3.12.0"
+dependencies = [
+    "fastapi==0.141.1",
+    "Faker==40.38.0",
+    "google-genai==2.22.0",
+    "psycopg2-binary==2.9.13",
+    "pydantic==2.13.5",
+    "python-dotenv==1.2.3",
+    "SQLAlchemy==2.0.52",
+    "uvicorn==0.52.4",
+]
+
 [tool.vercel]
 entrypoint = "main:app"

@@ -68,7 +68,7 @@ const Header = ({ title, subtitle }) => {
             fontWeight: '600',
             color: isOnline ? '#065f46' : '#991b1b'
           }}>
-            {isOnline ? 'Backend Online (Port 8000)' : 'Backend Disconnected'}
+            {isOnline ? 'Backend Online' : 'Backend Disconnected'}
           </span>
           <button
             onClick={pollHealth}

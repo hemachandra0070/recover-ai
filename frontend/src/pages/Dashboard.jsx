@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  checkHealth,
   getDashboardStats,
   getPayments,
   getRecoveryActions,
@@ -68,6 +69,11 @@ const Dashboard = () => {
 
   useEffect(() => { fetchAll(); }, []);
 
+  const retryConnection = async () => {
+    await checkHealth().catch(() => {});
+    await fetchAll();
+  };
+
   if (loading) return <LoadingSpinner message="Loading dashboard data..." />;
 
   if (error) {
@@ -76,7 +82,7 @@ const Dashboard = () => {
         <AlertCircle size={32} color="#dc2626" style={{ margin: '0 auto 10px' }} />
         <p style={{ fontWeight: 600, color: '#b91c1c', marginBottom: 6, fontSize: '0.875rem' }}>Backend Connection Failed</p>
         <p style={{ fontSize: '0.775rem', color: '#dc2626', marginBottom: 16 }}>{error}</p>
-        <button className="btn btn-secondary" onClick={fetchAll}>
+        <button className="btn btn-secondary" onClick={retryConnection}>
           <RefreshCw size={13} /> Retry
         </button>
       </div>

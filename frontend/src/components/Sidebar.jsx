@@ -96,7 +96,7 @@ const Sidebar = () => {
           </span>
         </div>
         <div style={{ marginTop: 3, fontSize: '0.6875rem', color: 'rgba(255,255,255,0.25)' }}>
-          FastAPI · port 8000
+          FastAPI · API Service
         </div>
       </div>
     </aside>
